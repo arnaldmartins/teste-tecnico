@@ -12,6 +12,6 @@ A Java EE (Java EE 8) web application for managing medications, built with **JSF
 ## 🚀 Requirements
 - **Java 8**
 - **Maven 3.8+**
-- **WildFly 17** (Jakarta EE 8)
+- **WildFly 17** (Java EE 8)
 
 
