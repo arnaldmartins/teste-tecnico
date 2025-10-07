@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Consulta Medicamentos por Paciente</title>
+</h:head>
+
+<h:body>
+    <p:growl id="messages" showDetail="true" />
+    
+    <h:link outcome="index.xhtml"
+		styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left">
+		<i class="pi pi-arrow-left">Home</i>
+	</h:link>
+    <p:card style="margin: 20px;">
+        <f:facet name="title">
+            Consulta Medicamentos por Paciente
+        </f:facet>
+
+        <h:form id="formPesquisa">
+            <p:panelGrid columns="3" style="margin-bottom:10px">
+            
+            <h:outputLabel for="pacientePesquisa" value="Paciente:" />
+            <p:autoComplete id="pacientePesquisa"
+                            value="#{consultaMedicamentoBean.pacientePesquisaSelecionado}"
+                            completeMethod="#{consultaMedicamentoBean.completarPacientePesquisa}"
+                            var="p" itemLabel="#{p.nome}" itemValue="#{p}"
+                            converter="pacienteConverter" required="true" requiredMessage="Selecione um paciente."
+                            forceSelection="false" dropdown="true" />
+            <p:spacer width="1" />
+            
+            <h:outputLabel for="medicamentoPesquisa" value="Medicamento:" />
+            <p:autoComplete id="medicamentoPesquisa"
+                            value="#{consultaMedicamentoBean.medicamentoPesquisaSelecionado}"
+                            completeMethod="#{consultaMedicamentoBean.completarMedicamentoPesquisa}"
+                            var="m" itemLabel="#{m.nome}" itemValue="#{m}"
+                            converter="medicamentoConverter"
+                            forceSelection="false" dropdown="true" />
+            <p:commandButton value="Pesquisar" action="#{consultaMedicamentoBean.pesquisarReceitas()}" update="formTableResultados:tabelaResultados messages" />
+            
+        </p:panelGrid>
+        </h:form>
+
+        <h:form id="formTableResultados">
+            <p:dataTable id="tabelaResultados" value="#{consultaMedicamentoBean.lazyReceitas}" lazy="true"
+            	var="receita" emptyMessage="Nenhuma receita encontrada." rowKey="#{receita.id}"
+                         paginator="true" rows="10"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15"
+            	>
+            
+            <p:column headerText="ID Receita">
+                <h:outputText value="#{receita.id}" />
+            </p:column>
+            
+            <p:column headerText="Data da Receita">
+                <h:outputText value="#{receita.dataReceita}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+            </p:column>
+            
+            <p:column headerText="Paciente">
+                <h:outputText value="#{receita.paciente.nome}" />
+            </p:column>          
+            
+            <p:column headerText="Medicamentos - Quantidade">
+                <p:dataList value="#{receita.medicamentos}" var="item">
+                    <p:panelGrid columns="2">
+                    	<h:outputText value="#{item.medicamento.nome}" />
+                    	<h:outputText value="#{item.quantidade}" />
+                    </p:panelGrid>
+                </p:dataList>
+            </p:column>
+            
+            <p:column headerText="Total de medicamentos">
+                <h:outputText value="#{receita.totalMedicamentos}" />
+            </p:column>
+            
+            <!-- ver detalhes ou editar 
+            <p:column headerText="Ações">
+                <p:commandButton icon="pi pi-search" value="Ver Detalhes" action="#{consultaMedicamentoBean.verDetalhesReceita(receita.id)}" /> 
+            </p:column>
+            -->
+        </p:dataTable>
+
+        </h:form>
+    </p:card>
+
+</h:body>
+</html>

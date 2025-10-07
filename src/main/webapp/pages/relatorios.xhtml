@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Relatório de Medicamentos Prescritos</title>
+</h:head>
+<h:body>
+    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+
+	<h:link outcome="index.xhtml"
+		styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left">
+		<i class="pi pi-arrow-left">Home</i>
+	</h:link>
+	
+    <p:panel header="Relatório de Medicamentos Prescritos" style="margin:20px;">
+        
+        <h2>Os 2 Medicamentos Mais Prescritos</h2>
+        <p:dataTable value="#{relatorioBean.top2Medicamentos}" var="medicamento" emptyMessage="Nenhum medicamento encontrado.">
+            <p:column headerText="Nome do Medicamento">
+                <h:outputText value="#{medicamento.nomeMedicamento}" />
+            </p:column>
+            <p:column headerText="Quantidade Total Prescrita">
+                <h:outputText value="#{medicamento.quantidadeTotalPrescrita}" />
+            </p:column>
+        </p:dataTable>
+
+        <p:separator style="margin:20px 0;" />
+
+        <h2>Os 2 Pacientes com Mais Medicamentos Prescritos</h2>
+        <p:dataTable value="#{relatorioBean.top2Pacientes}" var="paciente" emptyMessage="Nenhum paciente encontrado.">
+            <p:column headerText="Nome do Paciente">
+                <h:outputText value="#{paciente.nomePaciente}" />
+            </p:column>
+            <p:column headerText="Quantidade Total de Medicamentos">
+                <h:outputText value="#{paciente.quantidadeTotalMedicamentos}" />
+            </p:column>
+        </p:dataTable>
+
+        <p:separator style="margin:20px 0;" />
+
+        <h2>Pacientes e a Quantidade Total de Medicamentos Receitados</h2>
+        <p:dataTable value="#{relatorioBean.todosPacientesComTotalMedicamentos}" var="pacienteTotal" emptyMessage="Nenhum paciente encontrado.">
+            <p:column headerText="Nome do Paciente">
+                <h:outputText value="#{pacienteTotal.nomePaciente}" />
+            </p:column>
+            <p:column headerText="Quantidade Total de Medicamentos">
+                <h:outputText value="#{pacienteTotal.quantidadeTotalMedicamentos}" />
+            </p:column>
+        </p:dataTable>
+
+    </p:panel>
+</h:body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Gerenciamento de Pacientes</title>
+</h:head>
+
+<h:body>
+	<p:growl id="messages" showDetail="true" />
+
+	<h:link outcome="index.xhtml"
+		styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left">
+		<i class="pi pi-arrow-left">Home</i>
+	</h:link>
+	<p:card style="margin: 20px;">
+		<f:facet name="title">
+            Cadastro de Pacientes
+        </f:facet>
+
+		<h:form id="formPaciente">
+			<p:panelGrid columns="2" layout="grid"
+				styleClass="ui-panelgrid-blank form-group">
+				<p:outputLabel for="nome" value="Nome:" />
+				<p:inputText id="nome" value="#{pacienteBean.paciente.nome}"
+					required="true" requiredMessage="Nome do paciente é obrigatório."
+					disabled="#{pacienteBean.paciente == null}" />
+
+				<p:outputLabel for="cpf" value="CPF:" />
+				<p:inputMask id="cpf" value="#{pacienteBean.paciente.cpf}"
+					mask="999.999.999-99" required="true"
+					requiredMessage="CPF do paciente é obrigatório."
+					disabled="#{pacienteBean.paciente == null}" />
+			</p:panelGrid>
+
+			<p:toolbar style="margin-top: 10px;">
+				<f:facet name="left">
+					<p:commandButton value="Novo" icon="pi pi-plus"
+						actionListener="#{pacienteBean.novo}"
+						update="formPaciente messages" resetValues="true"
+						disabled="#{pacienteBean.paciente != null and pacienteBean.pacienteSelecionado == null}" />
+					<p:commandButton value="Salvar" icon="pi pi-save"
+						actionListener="#{pacienteBean.salvar}"
+						update="formPaciente formTablePacientes messages"
+						process="formPaciente" disabled="#{pacienteBean.paciente == null}" />
+				</f:facet>
+			</p:toolbar>
+		</h:form>
+	</p:card>
+
+	<p:card style="margin: 20px;">
+		<f:facet name="title">
+            Lista de Pacientes
+        </f:facet>
+
+		<h:form id="formPesquisa">
+			<p:panelGrid columns="3" layout="grid"
+				styleClass="ui-panelgrid-blank form-group">
+				<p:outputLabel for="nomePesquisa" value="Nome:" />
+				<p:inputText id="nomePesquisa" value="#{pacienteBean.nomePesquisa}" />
+				<p:spacer width="1" />
+
+				<p:outputLabel for="cpfPesquisa" value="CPF:" />
+				<p:inputMask id="cpfPesquisa" value="#{pacienteBean.cpfPesquisa}"
+					mask="999.999.999-99" />
+				<p:commandButton value="Pesquisar" icon="pi pi-search"
+					actionListener="#{pacienteBean.pesquisar}"
+					update="formTablePacientes" />
+			</p:panelGrid>
+		</h:form>
+
+		<h:form id="formTablePacientes">
+			<p:dataTable id="tablePacientes" var="pac"
+				value="#{pacienteBean.lazyPacientes}" lazy="true"
+				selectionMode="single"
+				selection="#{pacienteBean.pacienteSelecionado}" rowKey="#{pac.id}"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+
+				<p:ajax event="rowSelect"
+					update="formPaciente messages btnRemoverSelecionado"
+					listener="#{pacienteBean.editar}" />
+				<p:ajax event="rowUnselect"
+					update="formPaciente messages btnRemoverSelecionado"
+					listener="#{pacienteBean.novo}" />
+
+				<p:column headerText="ID">
+					<h:outputText value="#{pac.id}" />
+				</p:column>
+				<p:column headerText="Nome">
+					<h:outputText value="#{pac.nome}" />
+				</p:column>
+				<p:column headerText="CPF">
+					<h:outputText value="#{pac.cpf}" />
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton id="btnRemoverSelecionado"
+						value="Remover Selecionado" icon="pi pi-trash"
+						actionListener="#{pacienteBean.remover}"
+						update="formPaciente formTablePacientes messages"
+						disabled="#{pacienteBean.pacienteSelecionado == null}">
+						<p:confirm header="Confirmação"
+							message="Tem certeza que deseja remover este paciente?"
+							icon="pi pi-exclamation-triangle" />
+					</p:commandButton>
+				</f:facet>
+			</p:dataTable>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				responsive="true">
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no ui-button-flat" />
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" />
+			</p:confirmDialog>
+		</h:form>
+	</p:card>
+
+</h:body>
+</html>

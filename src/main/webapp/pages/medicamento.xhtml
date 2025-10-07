@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Gerenciamento de Medicamentos</title>
+</h:head>
+
+<h:body>
+    <p:growl id="messages" showDetail="true" />
+
+	<h:link outcome="index.xhtml"
+		styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left">
+		<i class="pi pi-arrow-left">Home</i>
+	</h:link>
+    <p:card style="margin: 20px;">
+        <f:facet name="title">
+            Cadastro de Medicamentos
+        </f:facet>
+
+        <h:form id="formMedicamento">
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                <p:outputLabel for="nome" value="Nome:"/>
+                <p:inputText id="nome" value="#{medicamentoBean.medicamento.nome}" required="true"
+                             requiredMessage="Nome do medicamento é obrigatório."
+                             disabled="#{medicamentoBean.medicamento == null}"/>
+
+            </p:panelGrid>
+
+            <p:toolbar style="margin-top: 10px;">
+                <f:facet name="left">
+                    <p:commandButton value="Novo" icon="pi pi-plus" actionListener="#{medicamentoBean.novo}"
+                                     update="formMedicamento messages" resetValues="true"
+                                     disabled="#{medicamentoBean.medicamento != null and medicamentoBean.medicamentoSelecionado == null}"/>
+                    <p:commandButton value="Salvar" icon="pi pi-save" actionListener="#{medicamentoBean.salvar}"
+                                     update="formMedicamento formTableMedicamentos messages" process="formMedicamento"
+                                     disabled="#{medicamentoBean.medicamento == null}"/>
+                </f:facet>
+            </p:toolbar>
+        </h:form>
+    </p:card>
+
+    <p:card style="margin: 20px;">
+        <f:facet name="title">
+            Lista de Medicamentos
+        </f:facet>
+
+        <h:form id="formPesquisa">
+            <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                <p:outputLabel for="nomePesquisa" value="Nome:"/>
+                <p:inputText id="nomePesquisa" value="#{medicamentoBean.nomePesquisa}"/>
+                <p:spacer width="1"/>
+
+                <p:commandButton value="Pesquisar" icon="pi pi-search" actionListener="#{medicamentoBean.pesquisar}"
+                                 update="formTableMedicamentos " />
+            </p:panelGrid>
+        </h:form>
+
+        <h:form id="formTableMedicamentos">
+            <p:dataTable id="tableMedicamentos" var="pac" value="#{medicamentoBean.lazyMedicamentos}" lazy="true"
+                         selectionMode="single" selection="#{medicamentoBean.medicamentoSelecionado}" rowKey="#{pac.id}"
+                         paginator="true" rows="10"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+
+                <p:ajax event="rowSelect" update="formMedicamento messages btnRemoverSelecionado" listener="#{medicamentoBean.editar}"/>
+                <p:ajax event="rowUnselect" update="formMedicamento messages btnRemoverSelecionado" listener="#{medicamentoBean.novo}"/>
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{pac.id}"/>
+                </p:column>
+                <p:column headerText="Nome">
+                    <h:outputText value="#{pac.nome}"/>
+                </p:column>
+
+                <f:facet name="footer">
+                    <p:commandButton id="btnRemoverSelecionado" value="Remover Selecionado" icon="pi pi-trash" actionListener="#{medicamentoBean.remover}"
+                                     update="formMedicamento formTableMedicamentos messages" disabled="#{medicamentoBean.medicamentoSelecionado == null}">
+                        <p:confirm header="Confirmação" message="Tem certeza que deseja remover este medicamento?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                </f:facet>
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true">
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes"/>
+            </p:confirmDialog>
+        </h:form>
+    </p:card>
+
+</h:body>
+</html>

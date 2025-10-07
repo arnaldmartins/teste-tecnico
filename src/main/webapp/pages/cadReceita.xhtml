@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Gerenciamento de Receitas</title>
+</h:head>
+
+<h:body>
+	<p:growl id="messages" showDetail="true" />
+
+	<h:link outcome="index.xhtml"
+		styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left">
+		<i class="pi pi-arrow-left">Home</i>
+	</h:link>
+	<p:card style="margin: 20px;">
+		<f:facet name="title">
+            Cadastro de Receita
+        </f:facet>
+
+		<h:form id="formReceita">
+			<p:panelGrid columns="2" columnClasses="label,value">
+				<h:outputLabel for="paciente" value="Paciente:" />
+				<p:autoComplete id="paciente"
+					value="#{receitaBean.pacienteSelecionado}"
+					completeMethod="#{receitaBean.completarPaciente}" var="p"
+					itemLabel="#{p.nome}" itemValue="#{p}"
+					converter="pacienteConverter" forceSelection="true" dropdown="true"
+					required="true" requiredMessage="Selecione um paciente." />
+
+				<h:outputLabel for="data" value="Data da Receita:" />
+				<p:calendar id="data" value="#{receitaBean.receita.dataReceita}"
+					pattern="dd/MM/yyyy" navigator="true" disabled="true" />
+			</p:panelGrid>
+
+			<h3>Medicamentos</h3>
+			<p:panelGrid columns="2" columnClasses="label,value">
+				<h:outputLabel for="medicamento" value="Medicamento:" />
+				<p:autoComplete id="medicamento"
+					value="#{receitaBean.medicamentoSelecionado}"
+					completeMethod="#{receitaBean.completarMedicamento}" var="m"
+					itemLabel="#{m.nome}" itemValue="#{m}"
+					converter="medicamentoConverter" forceSelection="true"
+					dropdown="true" />
+
+				<h:outputLabel for="quantidade" value="Quantidade:" />
+				<p:inputText id="quantidade" type="number"
+					 value="#{receitaBean.medicamentoReceitaAtual.quantidade}" />
+
+				<p:commandButton value="Adicionar Medicamento"
+					action="#{receitaBean.adicionarMedicamentoReceita}"
+					update="itensTable messages quantidade" />
+			</p:panelGrid>
+
+			<p:dataTable id="itensTable"
+				value="#{receitaBean.medicamentosReceita}" var="item"
+				emptyMessage="Nenhum medicamento adicionado.">
+				<p:column headerText="Medicamento">
+					<h:outputText value="#{item.medicamento.nome}" />
+				</p:column>
+				<p:column headerText="Quantidade">
+					<h:outputText value="#{item.quantidade}" />
+				</p:column>
+				<p:column headerText="Ações">
+					<p:commandButton icon="pi pi-trash"
+						action="#{receitaBean.removerMedicamentoReceita(item)}"
+						update="itensTable" process="@this" />
+				</p:column>
+			</p:dataTable>
+			<p:toolbar style="margin-top: 10px;">
+				<f:facet name="left">
+					<p:commandButton value="Salvar Receita"
+						action="#{receitaBean.salvarReceita}"
+						update="messages formReceita" />
+				</f:facet>
+			</p:toolbar>
+		</h:form>
+	</p:card>
+
+</h:body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.arnaldmartins</groupId>
+    <artifactId>teste-tecnico-ahoy</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Versões das dependências -->
+        <javaee.version>8.0</javaee.version>
+        <mojarra.version>2.3.4</mojarra.version> <!-- Última versão JSF 2.3 compatível com Java EE 8 -->
+        <primefaces.version>11.0.0</primefaces.version> <!-- Pode ajustar para uma versão mais recente se quiser -->
+        <hibernate.version>5.6.15.Final</hibernate.version>
+        <postgresql.version>42.7.3</postgresql.version> <!-- Versão do driver PostgreSQL -->
+    </properties>
+
+    <dependencies>
+        <!-- Java EE 8 APIs (Fornecido pelo Wildfly) -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSF (Mojarra - Implementação de Referência) -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.faces</artifactId>
+            <version>${mojarra.version}</version>
+            <scope>provided</scope> <!-- Provided pelo Wildfly -->
+        </dependency>
+
+        <!-- PrimeFaces -->
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${primefaces.version}</version>
+        </dependency>
+
+        <!-- Hibernate Core (Para uso em test/dev, Wildfly tem sua própria versão) -->
+        <!-- Embora o Java EE 8 já inclua JPA, o Hibernate é o provedor. É bom referenciar o Core -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+            <scope>provided</scope> <!-- Provided pelo Wildfly -->
+        </dependency>
+
+        <!-- PostgreSQL Driver (Fornecido pelo Wildfly via DataSource) -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>provided</scope> <!-- O Wildfly terá o driver configurado no Datasource -->
+        </dependency>
+
+        <!-- Necessário para CDI no ambiente de desenvolvimento/teste em algumas setups -->
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-shaded</artifactId>
+            <version>3.1.8.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <failOnMissingWebXml>${failOnMissingWebXml}</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <!-- Plugin para rodar a aplicação em um servidor embarcado (opcional, para testes rápidos) -->
+            <!-- Para Wildfly, você geralmente faria o deploy do WAR gerado -->
+            <!--
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>4.2.0.Final</version>
+            </plugin>
+            -->
+        </plugins>
+    </build>
+</project>
